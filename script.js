@@ -19,11 +19,9 @@ searchField.addEventListener('keyup', (e) =>
 );
 
 
-const divstart = `<div class="bookDetails absolute bg-yellow-400 drop-shadow-xl" 
+const divstart = `<div class="absolute bg-green-400 drop-shadow-xl" 
                       id="bookDetails"
-                      style="width: 10vw;
-                            height: 10vw;">
-                HELLO WORLD`
+                      style="max-width: 30vw;">`;
                 
 
 const divend = `</div>`
@@ -52,7 +50,6 @@ function renderBookList(bookList) {
   // för varje item i booklisten
   listItems.forEach((item) =>{
     renderBookDetails(item);
-    //console.log(item);
   })
 }
 
@@ -61,40 +58,45 @@ function renderBookDetails(item){
   
   item.addEventListener("mouseover", function(e){
     var target = e.target;
-    //console.log(target.innerHTML);
+
+    //Letar efter author och title i listelemenet och splittar dem
     let details = target.innerHTML.split(" - ");
     const objectAuthor = details[0].trim();
     const objectTitle = details[1].trim();
 
-    //let bookItem = getBook(e.target.id).then(result => getBook(e.target.id));
+
+    //kollar om author och titel stämmer överens, om de gör de hämta bild och text baserat på id
     for (let index = 0; index < bookList.length; index++){
       if (bookList[index].author == objectAuthor && bookList[index].title == objectTitle){
-        //let target = e.target;
-        //let bookItem = getBook(index).then((apiBooks) => (bookItem = apiBooks));
-        
-        //console.log(target)
+
         console.log("före getBooks");
-        let bookItem = getBook(index).then((apiBooks) => (bookItem = apiBooks));
-        console.log(bookItem);
-        console.log("COVER " + bookItem);
-        console.log("efter getBooks");
-        bookImg = `<img class='coverImg' src="`;
-        //bookImg += bookList[index].coverImage;
-        bookImg += bookItem.coverImage;
-        
-        bookImg += `" alt="" srcset=""></img>`
+        let bookItem = getBook(index + 1).then((bookID) => {
+          let bookDetailsHtml = `<img class='coverImg' src="`;
+          bookDetailsHtml += bookID.coverImage;
+          bookDetailsHtml += `" alt="" srcset=""></img>`;
+          bookDetailsHtml += `<p>`;
+          bookDetailsHtml += bookID.title;
+          bookDetailsHtml += `</p>`;
+          bookDetailsHtml += `<p>`;
+          bookDetailsHtml += bookID.author;
+          bookDetailsHtml += `</p>`;
+          let divHTML = divstart + bookDetailsHtml + divend;
+          root.insertAdjacentHTML('beforeend', divHTML);
+          console.log(bookImg)
+
+          // Bestämmer vart diven ska renderas
+          let div = document.getElementById('bookDetails');
+          let left = e.pageX + 25;
+          let top = e.pageY + 25;
+          div.style.left = left + 'px';
+          div.style.top = top + 'px';
+        });
       }
     }
     
-    let divHTML = divstart + bookImg + divend;
-    root.insertAdjacentHTML('beforeend', divHTML);
+    
 
-    let div = document.getElementById('bookDetails');
-    let left = e.pageX + 25;
-    let top = e.pageY + 25;
-    div.style.left = left + 'px';
-    div.style.top = top + 'px';
-  
+    
 
   })
   // Tar bort bookDetails när muspekaren lämnar list itemet 
