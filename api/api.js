@@ -7,3 +7,11 @@ async function getAll() {
 
   return result;
 }
+
+//hämtar boken från api:t baserat på id
+async function getBook(bookId){
+  const result = await fetch(url+`/${bookId}`).then((result) => result.json());
+
+
+  return result;
+}
